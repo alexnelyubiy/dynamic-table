@@ -1,9 +1,7 @@
 import { CREATE_TABLE } from "../actions";
 
 const initialState = {
-  table: [],
-  rows: null,
-  cols: null
+  table: []
 };
 
 export default function createTable(state = initialState, action) {
@@ -13,9 +11,7 @@ export default function createTable(state = initialState, action) {
         ...state,
         table: [
           ...action.payload.table
-        ],
-        rows: action.payload.rows,
-        cols: action.payload.cols
+        ]
       };
     default:
       return state;

@@ -6,55 +6,63 @@ import { modelSelector } from "../../selectors";
 
 class TableContainer extends Component {
 
-    getRandomArbitary(min, max) {
-        return Math.floor(Math.random() * (max - min) + min);
-    }
-
-    renderCell = () => {
-        const cellStyle = {
-            height: "20px",
-            width: "40px",
-            border: "1px solid black"
-        }
-        return(
-            <td className="cell" style={cellStyle}>
-                {this.getRandomArbitary(100, 999)}
-            </td>
-        )
-    }
-
-    createColumns = () => {
-        let cols = [];
-        for (let c = 0; c < this.props.cols; c++) {
-           cols.push(this.renderCell());
-        }
-        return cols;
-    }
-
-    renderRows = () => {
-        return(
-            <tr>
-               {this.createColumns()}
-            </tr>
-        )
-    }
-
-    createRows() {
-        let rows = [];
-        for (let i = 0; i < this.props.rows; i++) {
-            rows.push(this.renderRows());
-        }
-        return rows;   
-    }
-
     render() {
-        console.log("OOOOOO", this.createRows(), this.props.table);
-        if(this.props.table.lenght <= 1 ) return null
+        const { table } = this.props;
+        if(this.props.table.length <= 1) return null;
+
+        let tableTemplate;
+
+        function makeColumns(row) {
+            return row.map((item, i) => {
+                return <td className="cell" key={i}>{item.value}</td>
+            });
+        }
+
+        function setCellSum(row) {
+            let valueSum = [];
+            for(let i = 0; i < row.length; i++){
+                valueSum.push(row[i].value)
+            }   
+            return (
+                <td className="cell cellSum">
+                    {valueSum.reduce((sum, current) => {
+                        return sum + current}, 0)}
+                </td>
+            )
+        }
+
+        tableTemplate = table.map((row, i) => {
+            return <tr key={i}>{makeColumns(row)}{setCellSum(row)}</tr>
+        })
+
+        function calculateColumnMid() {
+            let averageRow = [];
+            const columns = table[0].length;
+    
+            for (let j = 0; j < columns; j++) {
+                let columnTotal = 0;
+                for (let i = 0; i < table.length; i++) {
+                    columnTotal += table[i][j].value;
+                }
+                let columnAverage = columnTotal / table.length
+                averageRow.push(columnAverage)
+            }
+            return averageRow.map((item, i) => {
+                return (
+                    <td className="cell cellAverage" key={i}>{Math.floor(item)}</td>
+                )
+            })
+        }
+        function averageValue() {
+            return (
+                <tr>{calculateColumnMid()}</tr>
+            )
+        }
+
         return(
-            
             <div className="table_wrapper">
                 <table>
-                    <tbody>{this.createRows()}</tbody>
+                    <tbody>{tableTemplate}{averageValue()}</tbody>
                 </table>
             </div>
         )

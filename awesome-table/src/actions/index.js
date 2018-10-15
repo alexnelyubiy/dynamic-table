@@ -1,6 +1,6 @@
 export const CREATE_TABLE = "CREATE_TABLE";
 
-export const createTable = (table, rows, cols) => ({
+export const createTable = (table) => ({
     type: CREATE_TABLE,
-    payload:   { table, rows, cols }
+    payload:   { table }
 })
